@@ -2,8 +2,11 @@ import { useRef, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import "./Modal.css"
+import Modal from './Modal.jsx'
 
 export default function App() {
+  const[showModal,setShowModal]=useState(false)
   const [errors,setErrors]=useState([])
 
   const inputName=useRef()
@@ -75,15 +78,30 @@ export default function App() {
   }
 
   const handleSubmit=(e)=>{ 
+      e.preventDefault()
+
     setErrors([])
-    if(!validationForm())
+    const valid=validationForm()
+    if(valid==false)
       {
-        e.preventDefault()
+        setShowModal(false)
+
       }
+    else
+      { 
+         e.preventDefault()
+         setShowModal(true)
+      }
+  
      
   }
+  function handleDivClick(){
+    if(showModal==true){
+      setShowModal(false)
+    }
+  }
   
-  return(<div>
+  return(<div onClick={handleDivClick}>
 
     {errors.length>0 ? 
     <ul className='bg-rose-300 list-disc list-inside text-black p-3.5 w-2/5 mx-auto mt-6 rounded-2xl '>
@@ -122,13 +140,16 @@ export default function App() {
         </select>
       </div>
       <div>
-        <input type="checkbox" id='inputChecked' ref={inputAccept} />
-        <label htmlFor="inputChecked">Accept all conditions</label>
+        <input type="checkbox" id='inputChecked' className="w-6 h-6" ref={inputAccept} />
+        <label  htmlFor="inputChecked"> Accept all conditions</label>
       </div>
       <div className=''>
         <input type="submit" value="Submit" id='inputSubmit' className='hover:bg-blue-600 px-auto min-w-12/12 bg-blue-500 rounded-xl text-amber-50 p-1.5' />
       </div>
     </form>
+    
+    {showModal &&<Modal/>}
+    
 
    </div>)
   }
